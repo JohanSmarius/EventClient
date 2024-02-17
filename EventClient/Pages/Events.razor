@@ -1,6 +1,7 @@
 ﻿@page "/events"
 @using System.Diagnostics.Tracing
 @using EventClient.Models
+@using Microsoft.AspNetCore.Components.QuickGrid
 @inject HttpClient Http
 
 <PageTitle>Events</PageTitle>
@@ -17,11 +18,11 @@
 }
 else
 {
-    <QuickGrid Data="events">
-        <PropertyColumn Title="Name" Property="Name" />
-        <PropertyColumn Title="Description" Property="Description" />
-        <PropertyColumn Title="Starttime" Property="StartTime" />
-        <PropertyColumn Title="Location" Property="Location" />
+    <QuickGrid Items="@eventsForGrid">
+        <PropertyColumn Property="@(e => e.Name)" Sortable="true"/>
+        <PropertyColumn Property="@(e => e.Description)" Sortable="true"/>
+        <PropertyColumn Property="@(e => e.StartTime)" Sortable="true"/>
+        <PropertyColumn Property="@(e => e.Location)" Sortable="true"/>
     </QuickGrid>
 
     <table class="table">
@@ -49,11 +50,12 @@ else
 
 @code {
     private Event[]? events;
-    private IQueryable<Event> eventsForGrid => events.AsQueryable();
+    private IQueryable<Event> eventsForGrid;
 
     protected override async Task OnInitializedAsync()
     {
-        events= await Http.GetFromJsonAsync<Event[]>("api/event");
+        events= await Http.GetFromJsonAsync<Event[]>("api/event") ?? Array.Empty<Event>();
+        eventsForGrid = events.AsQueryable();
     }
 
 }
