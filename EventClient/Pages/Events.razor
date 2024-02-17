@@ -49,6 +49,7 @@ else
 
 @code {
     private Event[]? events;
+    private IQueryable<Event> eventsForGrid => events.AsQueryable();
 
     protected override async Task OnInitializedAsync()
     {
