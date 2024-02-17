@@ -1,0 +1,51 @@
+﻿@page "/weather"
+@using System.Diagnostics.Tracing
+@using EventClient.Models
+@inject HttpClient Http
+
+<PageTitle>Events</PageTitle>
+
+<h1>Events</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (events == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Starttime</th>
+            <th>Location</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var e in events)
+        {
+            <tr>
+                <td>@e.Name</td>
+                <td>@e.Description</td>
+                <td>@e.StartTime</td>
+                <td>@e.Location</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Event[]? events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        events= await Http.GetFromJsonAsync<Event[]>("api/event");
+    }
+
+}
